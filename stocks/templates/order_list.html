@@ -1,0 +1,185 @@
+{% load static %}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link href="{% static "css/main.css" %}" rel="stylesheet">
+	<noscript><link rel="stylesheet" href="{% static "css/noscript.css"%} /></noscript>
+</head>
+<body class="is-preload">
+	<div id="content">
+	</div>
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+			<div class="logo">
+				<span class="icon fa-gem" src="static/img/logoblanc3.png" alt="" />
+			</div>
+			<div class="content">
+				<div class="inner">
+					<h1>CDLG</h1>
+					<p>Gestion de Stock <a href="https://www.chateaudelagabelle.fr/">du Chateau de la Gabelle</a> <br />
+					 <a href="#">--</a></p>
+					</div>
+				</div>
+				<nav>
+					<ul>
+						<li><a href="#entree">entree</a></li>
+						<li><a href="#change">change</a></li>
+						<li><a href="#sortie">sortie</a></li>
+						<li><a href="#retour">retour</a></li>
+					</ul>
+				</nav>
+			</header>
+
+			<!-- Main -->
+			<div id="main">
+
+				<!-- entree -->
+				<article id="entree">
+			<h2 class="major">Entree</h2>
+					<form method="POST" id="post-form">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="demo-category">From</label>
+							<select name="category" id="product1">
+								<option value="" disabled selected hidden>Product</option>
+								{% for product in products %}
+								<option value="{{ product.name }}">{{ product.name }}</option>
+								{% endfor %}
+							</select>
+							<input type="text" class="form-control" id="quantity1" placeholder="nb">
+							<select name="demo-category" id="type1">
+								<option value="" disabled selected hidden>type</option>
+								{% for type in types %}
+								<option value="{{type.name}}">{{ type.name }}</option>
+								{% endfor %}
+							</select>
+							<select name="demo-category"" id="site1">
+								<option value="" disabled selected hidden>From</option>
+								{% for site in sites %}
+								<option value="{{ site.name }}">{{ site.name }}</option>
+								{% endfor %}
+							</select>
+							<label for="demo-category">To</label>
+							<select name="category" id="product2">
+								<option value="" disabled selected hidden>Product</option>
+								{% for product in products %}
+								<option value="{{ product.name }}">{{ product.name }}</option>
+								{% endfor %}
+							</select>
+							<input type="text" class="form-control" id="quantity2" placeholder="nb">
+							<select name="demo-category" id="type2">
+								<option value="" disabled selected hidden>Type</option>
+								{% for type in types %}
+								<option value="{{type.name}}">{{ type.name }}</option>
+								{% endfor %}
+							</select>
+							<select name="demo-category"" id="site2">
+								<option value="" disabled selected hidden>Site</option>
+								{% for site in sites %}
+								<option value="{{ site.name }}">{{ site.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</br>
+					<button type="submit" class="primary">Save</button>
+				</form>
+</article>
+			<!-- change -->
+			<article id="change">
+<h2 class="major">change</h2>
+			</article>
+
+			<!-- sortie -->
+			<article id="sortie">
+								
+				<h2 class="major">sortie</h2>
+				<form method="POST" id="post-form">
+						{% csrf_token %}
+						<div class="form-group">
+							<select name="category" id="product2">
+								<option value="" disabled selected hidden>Product</option>
+								{% for product in products %}
+								<option value="{{ product.name }}">{{ product.name }}</option>
+								{% endfor %}
+							</select>
+							<input type="text" class="form-control" id="quantity2" placeholder="nb">
+							<select name="demo-category" id="type2">
+								<option value="" disabled selected hidden>Type</option>
+								{% for type in types %}
+								<option value="{{type.name}}">{{ type.name }}</option>
+								{% endfor %}
+							</select>
+							<select name="demo-category"" id="site2">
+								<option value="" disabled selected hidden>Site</option>
+								{% for site in sites %}
+								<option value="{{ site.name }}">{{ site.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</br>
+					<button type="submit" class="primary">Save</button>
+				</form>
+
+
+			<!-- Contact -->
+			<article id="Retour">
+				<h2 class="major">Retour</h2>
+			</article>
+		</div>
+
+
+		<!-- Footer -->
+		<footer id="footer">
+			<p class="copyright">&copy; Design: <a href="#">BIS</a>.</p>
+		</footer>
+
+	</div>
+
+	<!-- BG -->
+	<div id="bg"></div>
+
+	<!-- Scripts -->
+	<script src={% static "js/jquery.min.js"%}></script>
+	<script src={% static "js/browser.min.js"%}></script>
+	<script src={% static "js/breakpoints.min.js"%}></script>
+	<script src={% static "js/util.js"%}></script>
+	<script src={% static "js/main.js"%}></script>
+	<script>
+		$(document).on('submit', '#post-form',function(e){
+			e.preventDefault();
+			$.ajax({
+				type:'POST',
+				url:'{% url "create" %}',
+				data:{
+					product1:$('#product1').val(),
+					quantity1:$('#quantity1').val(),
+					type1:$('#type1').val(),
+					site1:$('#site1').val(),
+					product2:$('#product2').val(),
+					quantity2:$('#quantity2').val(),
+					type2:$('#type2').val(),
+					site2:$('#site2').val(),
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+					action: 'post'
+				},
+				success:function(json){
+				},
+				error : function(xhr,errmsg,err) {
+					$('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+		});
+	</script>
+</body>
+</html>
+
